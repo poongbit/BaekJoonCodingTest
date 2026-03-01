@@ -1,5 +1,8 @@
 # 백준 알고리즘 문제 풀이 저장소
 
+<img width="1500" height="500" alt="abstract_001_dark" src="https://github.com/user-attachments/assets/d444a75e-5327-443c-8a9b-426ba67020bf" />
+
+
 이 저장소는 백준 온라인 저지의 알고리즘 문제 풀이를 기록하고 공유하기 위한 곳입니다.
 
 ## 📊 solved.ac 통계
@@ -51,4 +54,3 @@
 3. 접근 방법 및 알고리즘 설명 (선택 사항)
 4. 시간 복잡도 및 공간 복잡도 분석 (선택 사항)
 
-![알고리즘 공부](https://github.com/user-attachments/assets/69600399-5107-4edd-87aa-74b02de454e0)
