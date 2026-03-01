@@ -1,6 +1,6 @@
 # 백준 알고리즘 문제 풀이 저장소
 
-<img width="1500" height="500" alt="abstract_001_dark" src="https://github.com/user-attachments/assets/d444a75e-5327-443c-8a9b-426ba67020bf" />
+<img width="1500" height="500" alt="abstract_002_dark" src="https://github.com/user-attachments/assets/f6d9c5bd-0920-402f-98cf-208c422c5639" />
 
 
 이 저장소는 백준 온라인 저지의 알고리즘 문제 풀이를 기록하고 공유하기 위한 곳입니다.
