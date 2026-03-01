@@ -41,20 +41,20 @@ for i in range(2,limit):
 N = int(input())
 
 
-def isPalindrome(num):
-    temp = list(str(num))
+# def isPalindrome(num):
+#     temp = list(str(num))
 
-    s = 0
-    e = len(temp) -1
+#     s = 0
+#     e = len(temp) -1
 
-    while s < e:
-        if temp[s] != temp[e]:
-            return False
+#     while s < e:
+#         if temp[s] != temp[e]:
+#             return False
 
-        s +=1
-        e -=1
+#         s +=1
+#         e -=1
 
-    return True
+#     return True
 
 
 # 어떤 수 N보다 크거나 같고 소수이면서 팰런드린 수 찾기
@@ -62,7 +62,7 @@ target = N
 
 while True:
     if is_prime[target] != False:
-        if (isPalindrome(target)):
+        if str(target) == str(target)[::-1]: # 글자 거꾸로 뒤집
             print(target) # 가장 먼저 나온게 가장 최소의 값
             break
     
