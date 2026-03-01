@@ -24,12 +24,13 @@ input = sys.stdin.readline
 
 
 # 에라토스테네스의 체를 통한 소수 구하기
-limit = 10**7 + 1
+limit = 2000000 + 1
 
 is_prime = [True] * limit
 is_prime[0] = False
 is_prime[1] = False
 
+# 배수들을 제거하는 '살수'의 역할을 제곱근까지만 맡긴다
 for i in range(2,int(limit**0.5)+1):
     if is_prime[i]:
 
@@ -67,4 +68,3 @@ while True:
             break
     
     target +=1
-
