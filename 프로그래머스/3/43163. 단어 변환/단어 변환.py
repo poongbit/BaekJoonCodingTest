@@ -26,20 +26,19 @@ def solution(begin, target, words):
         
     def DFS():
         q = deque()
-        q.append(begin)
+        q.append((begin,0))
         count = 0
 
         while q:
-            now_word = q.popleft()
+            now_word,dist = q.popleft()
 
             if now_word == target:
-                return count
+                return dist
 
             for i in range(len(words)):
                 if is_convertible(now_word,words[i]) and not visited[i]:
                     visited[i] = True
-                    count +=1
-                    q.append(words[i])
+                    q.append((words[i],dist+1))
         
         return 0
     
