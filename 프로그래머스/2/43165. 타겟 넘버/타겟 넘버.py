@@ -1,23 +1,22 @@
+import sys
 
 def solution(numbers, target):
     answer = 0
-
-    def DFS(index,current_sum):
-        if index == len(numbers):
+    
+    def DFS(i, current_sum):
+        # 숫자들을 다 쓴 경우
+        if i == len(numbers):
             if current_sum == target:
                 return 1
             else:
                 return 0
+            
         
-        return (DFS(index+1,current_sum + numbers[index])
-               + DFS(index+1,current_sum - numbers[index]))
-    
-        
-        
-                
-                
+        return DFS(i+1, current_sum + numbers[i]) + \
+        DFS(i+1, current_sum - numbers[i])
+            
     answer = DFS(0,0)
-    
+        
     
 
     return answer
