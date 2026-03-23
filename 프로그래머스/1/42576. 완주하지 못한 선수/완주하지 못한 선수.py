@@ -1,19 +1,17 @@
+from collections import defaultdict
 def solution(participant, completion):
     answer = ''
     
-    participant.sort()
-    completion.sort()
+    participant_attend = defaultdict(int)
     
-    flag = True
-    
-    for i in range(len(completion)):
-        if participant[i] != completion[i]:
-            answer = participant[i]
-            flag = False
-            break
-    
-    if flag:
-        answer = participant[-1]
+    for member in participant:
+        participant_attend[member] +=1
         
+    for member in completion:
+        participant_attend[member] -=1
+        
+    for i in range(len(participant)):
+        if participant_attend[participant[i]] !=0:
+            answer = participant[i]
     
     return answer
