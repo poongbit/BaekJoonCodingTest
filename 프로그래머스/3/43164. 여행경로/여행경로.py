@@ -3,33 +3,32 @@ from collections import defaultdict
 def solution(tickets):
     answer = []
     
-    # 티켓 사용 여부
+    # 모든 경로를 방문해야 하므로, DFS
+    # 티켓을 쓴 것 여부를 기록
     visited = [False] * len(tickets)
     
     
-    # 주어진 티켓을 다 활용해야 하고, 다 방문했는 지 체크해야 함
-    # 티켓을 다 사용하면 모든 도시를 방문할 수 있음 
+    def DFS(start,current):
+        # current에 전 도시를 다 둘러봤다면
+        if len(current) == len(tickets) + 1:
+            # current를 answer에 합치기
+            answer.append(current)
     
-    def DFS(start,route):
-        if len(route) == len(tickets) + 1:
-            answer.append(route)
-            return
-        
         for i in range(len(tickets)):
-            # 티켓을 사용하지 않았고, 출발지가 그 티켓의 출발지와 같은 경우
-            if not visited[i] and (start == tickets[i][0]):
+            # 티켓의 출발 지점과 초기 지점이 같고, 그 티켓을 쓰지 않았다면,
+            if tickets[i][0] == start and not visited[i]:
                 visited[i] = True
-                DFS(tickets[i][1], route + [tickets[i][1]])
-                
-                # 다시 돌아올 때 백 트래킹 필요
+                # 도착지, current + 도착지
+                DFS(tickets[i][1], current + [tickets[i][1]])
                 visited[i] = False
-                
-    
-    DFS("ICN",["ICN"])
     
     
-    return sorted(answer)[0]
+    DFS("ICN",['ICN'])
     
+    answer.sort()
+    
+    
+    return answer[0]
     
     
     
