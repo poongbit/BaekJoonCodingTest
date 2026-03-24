@@ -1,16 +1,18 @@
 def solution(phone_book):
     answer = True
     
-    # 반복적으로 번호를 탐색해야 하므로
+    # phonebook의 번호를 set()으로 저장해서 탐색 시간 줄이기
     set_phonebook = set(phone_book)
     
-    for word in set_phonebook:
+    for item in set_phonebook:
+        # 각 단어의 길이 체크
+        length = len(item)
         
-        word_length = len(word)
-        
-        for i in range(1,len(word)):
-            if word[:i] in set_phonebook:
-                answer = False
-                break
+        for i in range(1,length):
+            
+            if item[:i] in set_phonebook:
+                return False
+                
+    
     
     return answer
