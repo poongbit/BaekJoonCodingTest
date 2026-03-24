@@ -1,14 +1,16 @@
 def solution(arr):
     answer = []
-    # [실행] 버튼을 누르면 출력 값을 볼 수 있습니다.
     
-    for i in range(len(arr)):
-        if answer == [] or answer[-1] != arr[i]:
-            answer.append(arr[i])
+    stack = []
+    
+    for item in arr:
+        # 만약 아무 것도 없다면 일단 넣음
+        if not stack or stack[-1] != item:
+            stack.append(item)
         
-        elif answer[-1] == arr[i]:
-            continue
+        if item == stack[-1]:
+            pass
             
     
     
-    return answer
+    return stack
