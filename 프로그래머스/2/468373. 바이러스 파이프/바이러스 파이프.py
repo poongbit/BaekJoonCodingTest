@@ -1,54 +1,55 @@
 from collections import deque
+
 def solution(n, infection, edges, k):
     answer = 0
+
+    # 1. 양방향 그래프 생성
+    virus_graph = [[] for _ in range(n+1)]
     
-    # 바이러스 노드들과 엣지들간의 연결을 담은 전체 맵
-    infected_graph = [[] for _ in range(n+1)]
-    
-    # 양방향 그래프임 - 둘 다 연결되어 있으므로
     for x,y,p_type in edges:
-        infected_graph[x].append((y,p_type))
-        infected_graph[y].append((x,p_type))
+        virus_graph[x].append((y,p_type))
+        virus_graph[y].append((x,p_type))
     
-    # 감염된 노드, 중복되는 건 자동으로 처리해줌
-    infected = set()
+    # 2. spread 함수- BFS로 감염 전파
     
-    # 2. 감염되었을 떄 전파되는 것, BFS
-    def spread(infected_set,pipe_type):
-        # infected_set : 현재 감염된 노드들
-        # pipe_type : 이번에 열 파이프 타입
-        new_infected = set(infected_set) # 복사 (원본 유지)
-        queue = deque(infected_set)
+    def spread(infected_set,p_type):
+        # 새로운 new_infected
         
-        while queue:
-            node = queue.popleft()
-            for next_node, t in infected_graph[node]:
-                if t == pipe_type and next_node not in new_infected:
+        # 새로운 거는 기존에 것과 추가할 수 있도록 복사해둠
+        new_infected = set(infected_set)
+        
+        q = deque(infected_set)
+        
+        while q:
+            now_node = q.popleft()
+            for next_node, next_type in virus_graph[now_node]:
+                # 다음 타입이 spread할 타입과 같고, new_infected에 없는 새 노드
+                if next_type == p_type and next_node not in new_infected:
                     new_infected.add(next_node)
-                    queue.append(next_node)
-                    
-                    
+                    q.append(next_node)
+        
         return new_infected
     
-    
-    # 3. 순열 탐색
     answer = [0]
     
-    def dfs(remaining,infected_set, prev_type):
+    # 3. dfs 함수 호출 - > 타입 순열 검색
+    def DFS(remaining, infected_set, prev_type):
         answer[0] = max(answer[0],len(infected_set))
-        
+        # 반복이 다 끝났으면 종료
         if remaining == 0:
-            return
+            return 
         
-        for pipe_type in [1,2,3]:
-            if pipe_type == prev_type: # 연속 같은 타입은 스킵
+        # 타입 1,2,3
+        for p_type in [1,2,3]:
+            if p_type == prev_type:
                 continue
-                
-            new_infected = spread(infected_set,pipe_type)
-            dfs(remaining-1, new_infected,pipe_type)
+            new_infected = spread(infected_set,p_type)
+            DFS(remaining-1,new_infected,p_type)    
     
     
-    dfs(k,{infection},None)
-    return answer[0]
+    # 4. dfs 호출 - 리턴
         
+    DFS(k,{infection},None)
     
+    
+    return answer[0]
