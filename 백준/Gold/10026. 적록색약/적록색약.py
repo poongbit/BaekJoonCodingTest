@@ -13,13 +13,6 @@ for i in range(N):
 
     graph.append(line)
 
-
-
-
-# 방문 노드 만들기
-
-visited = [[False] * N for _ in range(N)]
-
 """
 1. 모든 곳을 순회하면서 탐험함
 2. 방문 안한 칸을 발견 -> BFS로 탐색해서, 이어저 있는 곳
@@ -29,50 +22,57 @@ visited = [[False] * N for _ in range(N)]
 
 """
 
-def is_same_color(x,y,color,is_blind):
-    # 만약에 적녹색약이면 R-G는 같은 색으로 구분
 
-    if is_blind:
-        
-        if color in ['G','R']:
-            return graph[y][x] in ['G','R']
+# 방문 노드 설정하기
 
-        else:
-            return graph[y][x] == color
-        
+visited = [[False]*N for _ in range(N)]
 
-    else:
-        return graph[y][x] == color
+
+def BFS(y,x,color,is_blind):
     
-    
+    # 초기 위치 설정
+    q = deque([(y,x)])
 
-
-
-
-
-def BFS(start_x,start_y,color,is_blind):
-    q = deque([(start_x,start_y)])
-
-    # 노드 방문 성공
-    visited[start_y][start_x] = True
-
-    # 상,하,좌,우
+    # 상,하,좌,우 탐색
     dx = [0,0,-1,1]
     dy = [-1,1,0,0]
 
     while q:
-        now_x,now_y = q.popleft()
+        now_y,now_x = q.popleft()
 
-        # 4방향 죄표 탐색
+        # 4방향 탐색
         for i in range(4):
-            x = now_x + dx[i]
-            y = now_y + dy[i]
 
-            if (0<=x<N and 0<=y<N) and not visited[y][x]:
-                if is_same_color(x,y,color,is_blind):
-                    # 방문 도장 쾅 찍기
-                    visited[y][x] = True
-                    q.append((x,y))
+            new_y = now_y + dy[i]
+            new_x = now_x + dx[i]
+
+            if 0<=new_y<N and 0<=new_x<N:
+                # 조건을 만족하는 지
+                if is_same_color(new_y,new_x,color,is_blind) and not visited[new_y][new_x]:
+                    
+                    # 방문 완료
+                    visited[new_y][new_x] = True
+                    q.append((new_y,new_x))
+
+
+
+def is_same_color(y,x,color,is_blind):
+
+    # is_blind가 True인 경우
+
+    if is_blind:
+        if color in ['G','R']:
+            return graph[y][x] in ['G','R']
+        
+        else:
+            return graph[y][x] == color
+        
+    else:
+        return graph[y][x] == color
+
+
+            
+# 적록 색약이 아닌 사람과 맞는 사람을 탐색
 
 
 count = 0
@@ -80,22 +80,19 @@ count = 0
 for y in range(N):
     for x in range(N):
         if not visited[y][x]:
-            BFS(x,y,graph[y][x],False)
+            BFS(y,x,graph[y][x],False)
             count +=1
 
-# 카운트를 하기 위한 새 방문 노드작성
-visited = [[False] * N for _ in range(N)]
+# 새 방문으로 판 갈기
+visited = [[False]*N for _ in range(N)]
 
-# 적록 색약인 사람이 방문하는 것
 blind_count = 0
 
 for y in range(N):
     for x in range(N):
         if not visited[y][x]:
-            BFS(x,y,graph[y][x],True)
+            BFS(y,x,graph[y][x],True)
             blind_count +=1
 
 
 print(count,blind_count)
-
-        
