@@ -65,7 +65,8 @@ for j in range(1,N):
 
 for row in range(1,N):
     for column in range(1,M):
-        dp[row][column] = max(dp[row-1][column],dp[row][column-1]) + graph[row][column]
+        dp[row][column] = max(dp[row-1][column],dp[row][column-1],dp[row-1][column-1]) + graph[row][column]
 
 
 print(dp[-1][-1])
+
