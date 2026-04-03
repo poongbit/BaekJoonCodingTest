@@ -32,44 +32,51 @@ def solution(temperature, t1, t2, a, b, onboard):
     
     """
     1. dp 배열 선언
-    2. 전력이 소모되는 케이스를 저장해서 각각 꺼낸다.
-    3. 조건이 맞는 선에서 전력이 가장 적게 드는 쪽으로 고른다.
+    dp[t][temp] = t분 때에 temp 온도일 때 소모되는 최소 전력
+    2. 전력이 소모되는 케이스를 candidates[] 리스트에 담아 넣는다
+    
+    for t in range(T-1):
+        for temp in range(-10,41):
+        
+        t분일 때 온도를 기준으로 전이 상태를 가져온다.
+    
+    
+    3. 조건이 맞는 선에서 dp를 최소값을 구한다.
     
     """
     
-    T = len(onboard) # 시간
-    # 최소를 구하는 거니 INF를 설정
+    T = len(onboard)
+    
+    # 최소를 구해야 하기 때문에 INF
     INF = float('inf')
+    # 온도 variation이 52임
+    dp = [[INF] * 52 for _ in range(T+1)]
     
-    dp = [[INF]*52 for _ in range(T+1)]
-    offset = 10 # temp에 들어갈 인덱스가 음수이면 입력이 안됨
+    offset = 10 # 온도에 영하도 들어갈 수 있음
     
-    # 초기값 설정
-    # 현재 0분은 실내온도와 실외온도가 같음, 전력소모 0
-    dp[0][offset+temperature] = 0
+    # 0분일 때 실내온도는 실외 온도와 같다., 그 때의 전력 소모량
+    dp[0][temperature + offset] = 0
     
-    # 2. 전력이 소모되는 케이스
-    
-    # t분 동안, 온도의 변화량
     for t in range(T-1):
-        for temp in range(-10,41): # 희망 온도 설정중
-            
-            # 도달하지 못한 곳은 그냥 넘김
-            if dp[t][offset+temp] == INF:
+        for temp in range(-10,41): # 희망 온도 설정
+            # 초반에 0분일 때 INF인 경우는 넘기기
+            if dp[t][temp+offset] == INF:
                 continue
             
-            # 도달한 곳에서 (t분일 때 온도 temp)
-            cost = dp[t][offset+temp]
+            # 비용 선언, 나중에 변화하면서 더해지는 거 생각
+            cost = dp[t][temp+offset]
             
-            candidates = [] # 전이 후보 설정
+            # t,temp에 따른 전이 상태를 저장한다
+            candidates = []
             
-            # 1. 에어컨이 켜져 있을 때
-            # 온도를 미리 낮추거나 높힘으로써 조절할 수 있으므로 경우 셋 다 포함
+            # 1. 에어컨이 켜진 경우
+            # 선택지를 이런식으로 골라볼 수 있음
             candidates.append((temp+1,a))
-            candidates.append((temp-1,a))
-            candidates.append((temp,b))
+            candidates.append((temp-1,a)) # 온도가 다른 경우
+            candidates.append((temp,b)) # 온도가 같은 경우
             
-            # 2. 에어컨이 꺼져있을 떄
+            # 2. 에어컨이 꺼져있을 경우
+            
             if temp > temperature:
                 candidates.append((temp-1,0))
                 
@@ -78,27 +85,32 @@ def solution(temperature, t1, t2, a, b, onboard):
                 
             else:
                 candidates.append((temp,0))
-            
+                
+            # 시간과 온도가 딱 정해진 후,
             
             for next_temp, add_cost in candidates:
+                # 존재할 수 있는 기온을 넘어선 경우
+                if not (-10<=next_temp<=40):
+                    continue # 넘김
                 
-                # 사람이 안 타고 있을 때는 t1,t2 굴레는 없지만, 그래도 최소
-                # 온도는 지켜야 함
-                if not(-10<=next_temp<=40):
-                    continue
-                
-                # 사람이 탔는데, t1,t2 밖에 있다면 안됨
-                if onboard[t+1] == 1 and not(t1<= next_temp <= t2):
+                # 다음에 사람이 탈 것으로 예상되는데,
+                # 온도가 기준에 못 맞을 경우 넘김 
+                if onboard[t+1] == 1 and not(t1<=next_temp<=t2):
                     continue
                     
+                # 기온이 영하가 되는 경우도 있으므로, 인덱스 변수 따로 선언
                 idx = next_temp + offset
-                    
-                dp[t+1][idx] = min(dp[t+1][idx], cost+add_cost) 
-                    
+                
+                # 그 다음 최소 전력은, 기존에 저장된거랑, 루프하면서 저장된 것중
+                # 작은걸로 업데이트 한다.
+                dp[t+1][idx] = min(dp[t+1][idx], cost + add_cost)
+            
     
     
     return min(dp[T-1])
-        
+            
+            
+    
     
     
     
