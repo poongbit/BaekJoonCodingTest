@@ -12,80 +12,72 @@ for _ in range(N):
 
 
 """
-1. (0,0)에서 BFS → 외부 공기 전부 표시
-2. 모든 치즈(1) 순회
-   → 상하좌우 중 외부 공기에 2면 이상 닿으면 녹임
-3. 치즈 다 녹을 때까지 반복
-4. 시간(몇 시간 걸렸는지) 출력
+1. 외부 공기 계산
+
+2. 녹여야할 치즈가 있는 동안:
+    외부 공기 계산
+    외부 공기 노출이 2번 이상 있으면 녹임
+
+
 """
 
-# 1. BFS에서 외부 공기 표시
+def BFS():
+    q = deque([(0,0)])
 
-def BFS_outside_air(x,y):
-
-    # 출발 지점
-    q = deque([(x,y)])
+    # 외부 공기를 2로 체크함
+    graph[0][0] = 2
 
     # 상,하,좌,우
     dx = [0,0,-1,1]
     dy = [-1,1,0,0]
 
     while q:
-        now_x, now_y = q.popleft()
+        row,column = q.popleft()
 
         for i in range(4):
-            new_x = now_x + dx[i]
-            new_y = now_y + dy[i]
+            new_row = row + dy[i]
+            new_column = column + dx[i]
 
-            if 0<=new_x<M and 0<=new_y<N:
+            if 0<=new_row<N and 0<=new_column<M:
+                if graph[new_row][new_column] == 0:
+                    graph[new_row][new_column] = 2
+                    q.append((new_row,new_column))
 
-                if graph[new_y][new_x] == 0:
                     
-                    # 바깥 공기 마주했다는 표시
-                    graph[new_y][new_x] = 2
-                    q.append((new_x,new_y))
 
+# 치즈가 아예 사라질 때까지 반복해야 함
 
-
-# 실제로 치즈가 남아있는 지 확인
 def has_cheese():
-    for row in range(N):
-        for column in range(M):
-            if graph[row][column] == 1:
-                return True
-            
-    return False
-
-
-time = 0
-
-while has_cheese():
-    # 외부 공기 재표시
-    for row in range(N):
-        for column in range(M):
-            if graph[row][column] ==2:
-                graph[row][column] = 0
-
-
-    # 외부 공기 재계산
-
-    # 방문 공기 체크 추가
-    graph[0][0] = 2
-    BFS_outside_air(0,0)
-
-    # 녹일 수 있는 치즈 찾기    
-    to_melt = []
     
     for row in range(N):
         for column in range(M):
             if graph[row][column] == 1:
-                
-                outside_count = 0
-                
+                return True
 
-                # 상,하,좌,우
-                dx = [0,0,-1,1]
-                dy = [-1,1,0,0]
+    return False
+
+
+time = 0
+while has_cheese():
+
+    # 1. BFS로 외부 공기 체크하기
+
+    BFS()
+
+    # 2. 외부 공기가 2 이상 닿은 곳을 체크하기
+
+    # 상,하,좌,우
+    dx = [0,0,-1,1]
+    dy = [-1,1,0,0]
+
+    # 녹여야 할 치즈 계산
+    cheese_left = []
+
+    for row in range(N):
+        for column in range(M):
+            if graph[row][column] == 1:
+                count = 0
+                # 치즈가 있는 곳에서 외부 공기가 2 이상이면
 
                 for i in range(4):
                     new_row = row + dy[i]
@@ -93,19 +85,29 @@ while has_cheese():
 
                     if 0<=new_row<N and 0<=new_column<M:
                         if graph[new_row][new_column] == 2:
-                            outside_count +=1
-                    
-                if outside_count >=2:
-                    to_melt.append((row,column))
+                            count +=1
 
+                
+                if count >=2:
+                    cheese_left.append((row,column))
 
+    # 치즈를 녹여야할 위치를 꺼내 0으로 바꿈
 
-    # 한꺼번에 녹이기
-
-    for row,column in to_melt:
+    for row,column in cheese_left:
         graph[row][column] = 0
 
+    
+    #치즈를 녹인 후 시간 1초가 지남
     time +=1
 
-                        
+    # 남아있는 외부 공기 2는 다시 0으로 바꿔줘서
+    # 다시 외부 공기 계산할 수 있도록 변경
+
+    for row in range(N):
+        for column in range(M):
+            if graph[row][column] == 2:
+                graph[row][column] = 0
+
+
+
 print(time)
