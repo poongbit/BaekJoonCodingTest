@@ -3,70 +3,70 @@ input = sys.stdin.readline
 
 N,M = map(int,input().split())
 
-# r,c,d 좌표
-# 북,동,남,서
+# 로봇의 처음 위치
+r,c,d = map(int,input().split())
+
+# 방향 - 북 동 남 서
 direction = [0,1,2,3]
 
-y,x,d = map(int,input().split())
+graph = []
 
-
-dx = [0,1,0,-1]
-dy = [-1,0,1,0]
-
-
-
-# 1. 그래프 입력 받기
-graph = [[0] * M for _ in range(N)]
-
-for i in range(N):
+for _ in range(N):
     line = list(map(int,input().split()))
-
-    for j in range(len(line)):
-        graph[i][j] = line[j]
+    graph.append(line)
 
 
-# 2. 시뮬레이션 돌리기
-# 0 : 청소 안됨, 1: 벽
+# 로봇 청소기 작동 방식
+# 0 : 청소 안됨, 1 : 벽
 
-# 청소한 횟수
-cleaned = 0
+is_cleaned= 0
+
 while True:
-    # 현재 칸이 청소가 되지 않은 경우, 청소한다.
-    if graph[y][x] == 0:
-        graph[y][x] = 2
-        cleaned +=1
+    # 현재 칸이 아직 청소가 되지 않은 경우, 현재 칸 청소
+    # 청소 됨을 2로 표현하기
 
-    # 4방향 탐색하기
-    # 90 도 회전하면서 탐색, 반시계
+    if graph[r][c] == 0:
+        graph[r][c] = 2
+        is_cleaned +=1
 
+    # 북,동,남,서 탐색
+    dx = [0,1,0,-1]
+    dy = [-1,0,1,0]
+
+    # 4방향 탐색
     turned = False
 
-    for i in range(4):
-        # ex) d = 0, next_d = 3
-        d = (d - 1) % 4
+    for _ in range(4):
+        # 왼쪽으로 90도씩 돌려서 탐색 
+        d = (d+3) % 4
 
-        new_x = x + dx[d]
-        new_y = y + dy[d]
+        new_r = r + dy[d]
+        new_c = c + dx[d]
 
-        if graph[new_y][new_x] == 0:
-            turned = True
-            # 한 칸 앞으로 전진
-            x,y = new_x, new_y
-            break
+        if 0<=new_r<N and 0<=new_c<M:
+            if graph[new_r][new_c] == 0:
+                # 앞으로 이동
+                r,c = new_r,new_c
+                turned = True
+                break
 
-    # 한번도 회전을 안 했을 경우
+    
     if not turned:
-        # 후진하기
+        # 바라보는 방향은 그대로 후진 가능
+        # 북 동 남 서, 0,1,2,3
         back = (d+2) % 4
-        current_x = x + dx[back]
-        current_y = y + dy[back]
 
-        if graph[current_y][current_x] == 1:
-            break
+        check_r = r + dy[back]
+        check_c = c + dx[back]
+
+        if (0<=check_r<N and 0<=check_c<M) and graph[check_r][check_c] != 1:
+            # 한칸 후진 가능
+            r,c = check_r,check_c
 
         else:
-            # 후진 한다
-            x,y = current_x,current_y
-    
+            # 종료
+            break
 
-print(cleaned)
+
+print(is_cleaned)
+
