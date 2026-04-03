@@ -1,78 +1,90 @@
 # 간단한 아침 문제입니다. 
 # 2차코테 2번정도의 난이도로 30분 안에 풀 수 있어야 합니다.
-
 from collections import deque
 
 def solution(board):
+    
+    """
+    1) R,G 파악하기 - R : 로봇의 처음 위치, D - 장애물 위치, G - 목표 지점
+    2) 슬라이딩 하는 움직임 함수 구현
+    3) BFS를 통해 최소 거리 구하기
+    
+    
+    """
     answer = 0
     
-    # R 지점 찾기
+    # 세로, 가로
+    N = len(board)
+    M = len(board[0])
     
-    for row in range(len(board)):
-        for column in range(len(board[0])):
+    # R 위치 확인하기 
+    
+    for row in range(N):
+        for column in range(M):
             if board[row][column] == 'R':
                 R_row, R_column = row,column
                 break
+                
+    # G 위치 확인하기
     
-    
-    
-    # G 지점 찾기
-    
-    for row in range(len(board)):
-        for column in range(len(board[0])):
+    for row in range(N):
+        for column in range(M):
             if board[row][column] == 'G':
                 G_row, G_column = row,column
                 break
     
+    # 상,하,좌,우 이동
+    dx = [0,0,-1,1]
+    dy = [-1,1,0,0]
     
     
-    # 한 방향으로 벽/장애물 만날 때 까지 쭉 이동:
-    
-    def slide(row,col,dr,dc):
-        while (0<=row + dr <len(board) 
-               and 0 <=col + dc <len(board[0])
-              and board[row+dr][col+dc] != 'D'):
-            
-            row += dr
-            col += dc
+    # 슬라이딩하는 함수 구하기
+    def slide(row,column,dx,dy):
+        # for 구문으로 반복하긴 어려우므로 while
+        # 벽이나 D에 부딫히기 전까지는 움직임
         
-        return row,col
+        while (0<=row +dy <N and 0<=column+dx <M) and (
+        board[row+dy][column+dx] != 'D'):
+            
+            # 같은 방향으로 쭉 이동
+            row += dy
+            column += dx
+
+        return row,column
     
-    
+    # 방문 노드 생성
+    visited = [[False] * M for _ in range(N)]
     
     def BFS():
+        # 초기 지점 , R의 row/column, 거리
         q = deque([(R_row,R_column,0)])
         
-        # 상,하,좌,우
-        dr = [0,0,-1,1]
-        dc = [-1,1,0,0]
-        
-        
-        # 방문 노드 생성
-        visited = [[False] * len(board[0]) for _ in range(len(board))]
+        # 방문 노드 방문 체크
         visited[R_row][R_column] = True
         
-        while q:
-            # 현재 노드, 칼럼 위치 반환
-            n_row, n_col,count = q.popleft()
-            
-            if n_row == G_row and n_col == G_column:
-                return count
-            
-            
-            # 슬라이딩 진행
-            for i in range(4):
-                new_row, new_col = slide(n_row,n_col,dr[i],dc[i])
-                
-                if not visited[new_row][new_col]:
-                    visited[new_row][new_col] = True
-                    q.append((new_row,new_col,count+1))
+        # 상,하,좌,우 이동
+        dx = [0,0,-1,1]
+        dy = [-1,1,0,0]
         
-        # 다 만족하지 않으면 -1 반환
-        return -1
+        while q:
+            n_row, n_column, move = q.popleft()
+            
+            if n_row == G_row and n_column == G_column:
+                return move
+            
+            for i in range(4):
+                u_row,u_col = slide(n_row,n_column,dx[i],dy[i])
+                
+                if not visited[u_row][u_col]:
+                    visited[u_row][u_col] = True
+                    q.append((u_row,u_col,move + 1))
+            
                     
+        # 없으면 -1 반환   
+        return -1
+    
     
     answer = BFS()
     
-    return answer
     
+    return answer
