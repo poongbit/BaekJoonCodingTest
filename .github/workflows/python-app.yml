@@ -20,29 +20,27 @@ jobs:
         with:
           python-version: '3.11'
 
+
+
       - name: Install dependencies
-        run: pip install requests
+        run: pip install cloudscraper
 
       - name: Get solved.ac user info and problem stats
         id: solvedac
         run: |
           python3 << 'PYEOF'
-          import requests
+          import cloudscraper
           import os
           from datetime import datetime
 
           BOJ_USERNAME = "rladydgnj"
 
-          HEADERS = {
-              "User-Agent": "github-actions/solvedac-readme-updater",
-              "Accept": "application/json",
-          }
+          # cloudscraper: Cloudflare 챌린지 자동 우회
+          scraper = cloudscraper.create_scraper()
 
           # 사용자 정보 가져오기
-          res = requests.get(
-              f"https://solved.ac/api/v3/user/show?handle={BOJ_USERNAME}",
-              headers=HEADERS
-          )
+          res = scraper.get(f"https://solved.ac/api/v3/user/show?handle={BOJ_USERNAME}")
+          print(f"STATUS: {res.status_code}")
           user = res.json()
 
           tier = user["tier"]
@@ -70,9 +68,8 @@ jobs:
           total = 0
 
           while True:
-              r = requests.get(
-                  f"https://solved.ac/api/v3/search/problem?query=solved_by:{BOJ_USERNAME}&page={page}",
-                  headers=HEADERS
+              r = scraper.get(
+                  f"https://solved.ac/api/v3/search/problem?query=solved_by:{BOJ_USERNAME}&page={page}"
               )
               data = r.json()
               items = data.get("items", [])
