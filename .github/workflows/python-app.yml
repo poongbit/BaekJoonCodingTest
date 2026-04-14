@@ -22,7 +22,12 @@ jobs:
           BOJ_USERNAME="rladydgnj"
           
           # solved.ac API에서 사용자 정보 가져오기
-          USER_INFO=$(curl -s -H "Content-Type: application/json" "https://solved.ac/api/v3/user/show?handle=${rladydgnj}")
+          USER_INFO=$(curl -s \
+            -H "Content-Type: application/json" \
+            -H "User-Agent: Mozilla/5.0" \
+            "https://solved.ac/api/v3/user/show?handle=${BOJ_USERNAME}")
+          
+          echo "USER_INFO: $USER_INFO"
           
           # 필요한 정보 추출
           TIER=$(echo $USER_INFO | jq -r '.tier')
@@ -74,7 +79,11 @@ jobs:
           TOTAL_PROBLEMS=0
           
           while true; do
-            PROBLEMS=$(curl -s -H "Content-Type: application/json" "https://solved.ac/api/v3/search/problem?query=solved_by:${rladydgnj}&page=${PAGE}")
+            PROBLEMS=$(curl -s \
+              -H "Content-Type: application/json" \
+              -H "User-Agent: Mozilla/5.0" \
+              "https://solved.ac/api/v3/search/problem?query=solved_by:${BOJ_USERNAME}&page=${PAGE}")
+            echo "PAGE $PAGE RESPONSE: $PROBLEMS"
             COUNT=$(echo $PROBLEMS | jq '.count')
             ITEMS=$(echo $PROBLEMS | jq '.items')
             ITEMS_COUNT=$(echo $ITEMS | jq 'length')
@@ -183,7 +192,9 @@ jobs:
           2. 문제 설명 (선택 사항)
           3. 접근 방법 및 알고리즘 설명 (선택 사항)
           4. 시간 복잡도 및 공간 복잡도 분석 (선택 사항)
-          
+
+          ![알고리즘 공부](https://github.com/user-attachments/assets/69600399-5107-4edd-87aa-74b02de454e0)
+          EOL
 
       - name: Commit and push changes
         run: |
