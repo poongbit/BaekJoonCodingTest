@@ -3,7 +3,7 @@
 이 저장소는 백준 온라인 저지의 알고리즘 문제 풀이를 기록하고 공유하기 위한 곳입니다.
 
 ## 📊 solved.ac 통계
-> 마지막 업데이트: 2026-08-22 01:18:56
+> 마지막 업데이트: 2026-08-23 01:26:19
 
 [![solved.ac 프로필](https://mazassumnida.wtf/api/v2/generate_badge?boj=rladydgnj)](https://solved.ac/profile/rladydgnj)
 
